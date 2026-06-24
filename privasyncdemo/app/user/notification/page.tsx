@@ -1,8 +1,8 @@
+import NotificationCenter from "@/components/notificationCenter";
 export default function DashboardPage() {
     return (
-        <div>
-            <h1>Dashboard</h1>
-            <p>Welcome to the admin dashboard!</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center my-2">
+  <NotificationCenter />
+</div>
     );
 }

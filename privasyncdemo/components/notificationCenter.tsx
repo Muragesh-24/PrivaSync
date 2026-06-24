@@ -80,82 +80,114 @@ export default function NotificationCenter() {
     setOpenMenuId(null);
   };
 
-  return (
-    <div className="w-full max-w-md ml-auto h-full rounded-2xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+ return (
+  <div className="min-h-screen w-full bg-gray-50">
+    <div className="mx-auto max-w-5xl">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-        <button className="flex items-center gap-1 text-black-700 font-semibold text-sm hover:text-cyan-800">
-          All Notifications
-        </button>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={markAllRead}
-            title="Mark all as read"
-            className="flex items-center justify-center w-7 h-7 rounded-full bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"
-          >
-            <Check size={14} strokeWidth={3} />
-          </button>
+      <div className="sticky top-0 z-20 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Stay updated with your latest activity
+          </p>
         </div>
+
+        <button
+          onClick={markAllRead}
+          title="Mark all as read"
+          className="flex items-center gap-2 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-700"
+        >
+          <Check size={16} strokeWidth={3} />
+          Mark all as read
+        </button>
       </div>
 
-      <div className="max-h-[520px] overflow-y-auto">
+      {/* Notifications List */}
+      <div className="divide-y divide-gray-200">
         {notifications.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 py-16 text-gray-400">
-            <Bell size={28} />
-            <p className="text-sm">You&apos;re all caught up</p>
+          <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50">
+              <Bell size={30} className="text-cyan-600" />
+            </div>
+
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900">
+                You&apos;re all caught up
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                No new notifications at the moment.
+              </p>
+            </div>
           </div>
         ) : (
           notifications.map((n) => (
             <div
               key={n.id}
-              className={`relative flex gap-3 px-5 py-4 transition-colors ${
-                n.unread ? "bg-cyan-50/60" : "bg-white"
+              className={`group relative flex gap-4 bg-white px-6 py-5 transition-all hover:bg-gray-50 ${
+                n.unread ? "border-l-4 border-cyan-600" : ""
               }`}
             >
-              <div className="w-2 pt-1.5 shrink-0">
-                {n.unread && (
-                  <span className="block w-2 h-2 rounded-full bg-cyan-600" />
+              {/* Unread Indicator */}
+              <div className="flex-shrink-0 pt-2">
+                {n.unread ? (
+                  <span className="block h-3 w-3 rounded-full bg-cyan-600" />
+                ) : (
+                  <span className="block h-3 w-3 rounded-full bg-gray-200" />
                 )}
               </div>
 
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900">{n.title}</p>
-                <p className="text-sm text-gray-500 mt-1 leading-snug">{n.body}</p>
+              {/* Content */}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {n.title}
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-gray-600">
+                      {n.body}
+                    </p>
+                  </div>
+
+                  <span className="whitespace-nowrap text-xs text-gray-400">
+                    {n.time}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex flex-col items-end shrink-0 pl-2">
-                <span className="text-xs text-gray-400">{n.time}</span>
-                <div className="relative mt-1.5">
-                  <button
-                    onClick={() => toggleMenu(n.id)}
-                    className="text-cyan-500 hover:text-cyan-700 px-1"
-                  >
-                    <MoreHorizontal size={16} />
-                  </button>
-                  {openMenuId === n.id && (
-                    <div className="absolute right-0 mt-1 w-40 rounded-lg border border-gray-200 bg-white shadow-md z-10 text-sm overflow-hidden">
-                      {n.unread && (
-                        <button
-                          onClick={() => markOneRead(n.id)}
-                          className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-50"
-                        >
-                          Mark as read
-                        </button>
-                      )}
+              {/* Actions */}
+              <div className="relative flex-shrink-0">
+                <button
+                  onClick={() => toggleMenu(n.id)}
+                  className="rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <MoreHorizontal size={18} />
+                </button>
+
+                {openMenuId === n.id && (
+                  <div className="absolute right-0 top-8 z-30 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+                    {n.unread && (
                       <button
-                        onClick={() => removeOne(n.id)}
-                        className="block w-full text-left px-3 py-2 text-red-600 hover:bg-red-50"
+                        onClick={() => markOneRead(n.id)}
+                        className="block w-full px-4 py-3 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
                       >
-                        Remove
+                        Mark as read
                       </button>
-                    </div>
-                  )}
-                </div>
+                    )}
+
+                    <button
+                      onClick={() => removeOne(n.id)}
+                      className="block w-full px-4 py-3 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+                    >
+                      Remove notification
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))
         )}
       </div>
     </div>
-  );
+  </div>
+);
 }
